@@ -1,0 +1,32 @@
+FT ID RT WT ST
+21 113 15 0 6
+20 116 18 0 2
+19 115 17 0 2
+19 114 16 0 3
+15 112 13 0 2
+15 110 11 0 4
+13 111 12 0 1
+12 109 9 0 3
+10 108 8 0 2
+9 107 7 0 2
+9 106 6 0 3
+9 105 5 0 4
+5 104 3 0 2
+5 102 2 0 3
+4 101 1 0 3
+3 103 2 0 1
+
+Statistics:
+Total Orders: 16
+VIP Orders: 4
+Vegan Orders: 4
+Normal Orders: 8
+Express Orders: 0
+Total Chiefs: 11
+Normal Chiefs: 4
+Vegan Chiefs: 3
+VIP Chiefs: 2
+Express Chiefs: 2
+Average Waiting Time: 0
+Average Service Time: 2.6875
+Auto-Promoted Orders: 0%
