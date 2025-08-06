@@ -96,12 +96,12 @@ public:
             }
             count++;
         }
-        cout << endl;
+        cout << "\n" << endl;
     }
 
     void PrintOrders() {
         if (isSilentMode) return;
-        cout << string(20, '-') << " Waiting Orders IDs: " << string(20, '-') << endl;
+        cout << string(20, '-') << " Waiting Orders IDs: " << string(20, '-') << "\n" << endl;
         cout << CountWaitingNormal() << " NRM orders: ";
         LinkedQueue<Order*> tempN = WaitingNormal;
         Order* order;
@@ -122,12 +122,12 @@ public:
         cout << CountWaitingExpress() << " EXP orders: ";
         LinkedQueue<Order*> tempE = WaitingExpress;
         while (tempE.dequeue(order)) cout << order->getID() << " ";
-        cout << endl;
+        cout << "\n" << endl;
     }
 
     void PrintChiefs() {
         if (isSilentMode) return;
-        cout << string(20, '-') << " Available Chiefs IDs: " << string(20, '-') << endl;
+        cout << string(20, '-') << " Available Chiefs IDs: " << string(20, '-') << "\n" << endl;
         cout << CountReadyNormal() << " NRM chiefs: ";
         priQueue<Chief*> tempN = ReadyNormal;
         Chief* chief;
@@ -158,12 +158,12 @@ public:
         cout << CountBusy() << " busy chiefs: ";
         priQueue<Chief*> tempBusy = Busy;
         while (tempBusy.dequeue(chief, pri)) cout << chief->getID() << " ";
-        cout << endl;
+        cout << "\n" << endl;
     }
 
     void PrintInService() {
         if (isSilentMode) return;
-        cout << string(20, '-') << " In-service (" << CountInService() << "): " << string(20, '-') << endl;
+        cout << string(20, '-') << " In-service (" << CountInService() << "): " << string(20, '-') << "\n" << endl;
         priQueue<Order*> temp = InService;
         Order* order;
         int pri;
@@ -171,7 +171,7 @@ public:
             cout << order->getID() << "(" << order->getSize() << ")->"
                 << order->getAssignedChief()->getID() << "(" << order->getAssignedChief()->getSpeed() << ") ";
         }
-        cout << endl;
+        cout << "\n" << endl;
     }
 
     void PrintDone() {
@@ -317,7 +317,7 @@ public:
         while (!Events.isEmpty() || !WaitingVIP.isEmpty() || !WaitingVegan.isEmpty() ||
             !WaitingNormal.isEmpty() || !WaitingExpress.isEmpty() || !InService.isEmpty()) {
             if (!isSilentMode) {
-                cout << "\n=== Timestep " << currentTime << " ===" << endl;
+                cout << "\n=== Timestep " << currentTime << " ===" << "\n" << endl;
                 PrintEventsLimited();
                 PrintOrders();
                 PrintChiefs();
