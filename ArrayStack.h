@@ -57,15 +57,9 @@ public:
 		return true;
 	}  // end peek
 
-	int size(ArrayStack <T> s) const
+	int size() const
 	{
-		T top;
-		int count = 0;
-		while (!s.isEmpty()) {
-			count++;
-			s.pop(top);
-		}
-		return count;
+		return top + 1;
 	}
 
 	ArrayStack<T>& operator=(const ArrayStack<T>& rhs)

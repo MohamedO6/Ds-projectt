@@ -66,11 +66,7 @@ public:
     int CountWaitingNormal() { return WaitingNormal.size(); }
     int CountWaitingExpress() { return WaitingExpress.size(); }
     int CountInService() { return InService.size(); }
-    int CountDone() { 
-        // For now, return 0 since we can't easily count without modifying the stack
-        // This is a limitation of the ArrayStack implementation
-        return 0;
-    }
+    int CountDone() { return Done.size(); }
     int CountReadyVIP() { return ReadyVIP.size(); }
     int CountReadyVegan() { return ReadyVegan.size(); }
     int CountReadyNormal() { return ReadyNormal.size(); }
@@ -295,12 +291,11 @@ public:
             }
             
             if (isBusy) {
-                // Return chief to their original ready queue
                 if (chief->getType() == 'V') AddReadyVIP(chief);
                 else if (chief->getType() == 'G') AddReadyVegan(chief);
                 else if (chief->getType() == 'N') AddReadyNormal(chief);
-                else AddReadyExpress(chief);
-                return false; // Chief already has an order in service
+                else if(chief->getType() == 'E')AddReadyExpress(chief);
+                else return false;
             }
 
             order->setAssignedChief(chief);
@@ -309,7 +304,6 @@ public:
             order->setFinishTime(currentTime + st);
             chief->incrementOrdersServed();
 
-            // Add chief to busy queue
             AddBusy(chief);
 
             return true;
