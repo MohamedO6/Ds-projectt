@@ -29,12 +29,12 @@ public:
     priQueue<Chief*> ReadyExpress; // Bonus: Express Chiefs
     priQueue<Chief*> InBreak;
 
-    int N, G, V, E; // E for Express Chiefs
-    int BO, BN, BG, BV, BE; // BE for Express Chiefs
+    int N, G, V, E;
+    int BO, BN, BG, BV, BE;
     int AutoP;
-    bool isSilentMode; // For Interactive/Silent Mode
-    int totalVIPOrders, totalVeganOrders, totalNormalOrders, totalExpressOrders; // Stats
-    int autoPromotedOrders; // Stats
+    bool isSilentMode; // Interactive/Silent Mode
+    int totalVIPOrders, totalVeganOrders, totalNormalOrders, totalExpressOrders;
+    int autoPromotedOrders;
 
     Restaurant() : N(0), G(0), V(0), E(0), BO(0), BN(0), BG(0), BV(0), BE(0), AutoP(0),
         isSilentMode(false), totalVIPOrders(0), totalVeganOrders(0),
@@ -98,7 +98,7 @@ public:
 
     void PrintOrders() {
         if (isSilentMode) return;
-        cout << "Waiting Orders IDs:" << endl;
+        cout << string(20, '-') << " Waiting Orders IDs: " << string(20, '-') << endl;
         cout << CountWaitingNormal() << " NRM orders: ";
         LinkedQueue<Order*> tempN = WaitingNormal;
         Order* order;
@@ -124,7 +124,7 @@ public:
 
     void PrintChiefs() {
         if (isSilentMode) return;
-        cout << "Available Chiefs IDs:" << endl;
+        cout << string(20, '-') << " Available Chiefs IDs: " << string(20, '-') << endl;
         cout << CountReadyNormal() << " NRM chiefs: ";
         priQueue<Chief*> tempN = ReadyNormal;
         Chief* chief;
@@ -155,7 +155,7 @@ public:
 
     void PrintInService() {
         if (isSilentMode) return;
-        cout << "In-service (" << CountInService() << "):" << endl;
+        cout << string(20, '-') << " In-service (" << CountInService() << "): " << string(20, '-') << endl;
         priQueue<Order*> temp = InService;
         Order* order;
         int pri;
@@ -168,7 +168,7 @@ public:
 
     void PrintDone() {
         if (isSilentMode) return;
-        cout << "Done (" << CountDone() << "):" << endl;
+        cout << string(20, '-') << " Done (" << CountDone() << "): " << string(20, '-') << endl;
         ArrayStack<Order*> temp = Done;
         Order* order;
         while (temp.pop(order)) cout << order->getID() << " ";
@@ -267,7 +267,7 @@ public:
 
         if (chief) {
             if (chief->getIsInjured() && chief->getInjuryRestPeriod() > currentTime) {
-                chief->setSpeed(chief->getSpeed() / 2); // Bonus: Half speed if injured
+                chief->setSpeed(chief->getSpeed() / 2);
             }
             order->setAssignedChief(chief);
             order->setAssignmentTime(currentTime);
@@ -410,13 +410,13 @@ public:
                 }
             }
 
-            // Bonus: Health Emergency Check
+            //Health Emergency Check
             priQueue<Chief*> tempChiefs;
             tempChiefs = ReadyVIP;
             ReadyVIP.clear();
             while (tempChiefs.dequeue(chief, pri)) {
-                if (rand() % 100 < 1 && !chief->getIsInjured()) { // 1% chance
-                    chief->setInjured(true, currentTime + 5); // 5 timesteps rest
+                if (rand() % 100 < 1 && !chief->getIsInjured()) {
+                    chief->setInjured(true, currentTime + 5);
                 }
                 AddReadyVIP(chief);
             }
