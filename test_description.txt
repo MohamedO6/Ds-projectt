@@ -1,0 +1,243 @@
+RESTAURANT SIMULATION TEST DESCRIPTION
+=====================================
+
+This document describes all available input files and their testing scenarios for the
+restaurant simulation system. Each file is designed to test specific aspects of the
+simulation and demonstrate different behaviors.
+
+OVERVIEW OF TEST FILES
+======================
+
+1. BASIC TEST FILES (input_file1_25_events.txt to input_file6_150_events.txt)
+------------------------------------------------------------------------------
+
+These files provide a comprehensive testing suite with increasing complexity:
+
+A) input_file1_25_events.txt (25 events)
+   - Complexity: SIMPLE
+   - Chiefs: 2 Normal, 1 Vegan, 1 VIP, 1 Express
+   - Break threshold: 2 (very low - frequent breaks)
+   - Auto-promotion: 2 timesteps
+   - Scenarios tested:
+     * Basic order processing
+     * All order types (N, V, G, E)
+     * Chief assignment logic
+     * Simple break scenarios
+   - Best for: Basic functionality testing, debugging
+
+B) input_file2_50_events.txt (50 events)
+   - Complexity: MODERATE
+   - Chiefs: 3 Normal, 2 Vegan, 2 VIP, 1 Express
+   - Break threshold: 3
+   - Auto-promotion: 3 timesteps
+   - Scenarios tested:
+     * All basic scenarios from file1
+     * Cancellation events (X)
+     * Promotion events (P)
+     * Mixed event types
+     * Moderate load handling
+   - Best for: Event type testing, moderate load scenarios
+
+C) input_file3_75_events.txt (75 events)
+   - Complexity: MODERATE-HIGH
+   - Chiefs: 4 Normal, 3 Vegan, 3 VIP, 2 Express
+   - Break threshold: 4
+   - Auto-promotion: 4 timesteps
+   - Scenarios tested:
+     * All scenarios from file2
+     * Higher load conditions
+     * More complex chief interactions
+     * Express order handling
+   - Best for: Load testing, chief interaction scenarios
+
+D) input_file4_100_events.txt (100 events)
+   - Complexity: HIGH
+   - Chiefs: 5 Normal, 4 Vegan, 4 VIP, 3 Express
+   - Break threshold: 5
+   - Auto-promotion: 5 timesteps
+   - Scenarios tested:
+     * All scenarios from file3
+     * Heavy load conditions
+     * Complex scheduling
+     * Multiple chief types working simultaneously
+   - Best for: Performance testing, complex scenarios
+
+E) input_file5_125_events.txt (125 events)
+   - Complexity: VERY HIGH
+   - Chiefs: 6 Normal, 5 Vegan, 5 VIP, 4 Express
+   - Break threshold: 6
+   - Auto-promotion: 6 timesteps
+   - Scenarios tested:
+     * All scenarios from file4
+     * Very heavy load conditions
+     * Complex timing scenarios
+     * Stress testing
+   - Best for: Stress testing, complex timing scenarios
+
+F) input_file6_150_events.txt (150 events)
+   - Complexity: EXTREME
+   - Chiefs: 8 Normal, 5 Vegan, 5 VIP, 4 Express
+   - Break threshold: 8
+   - Auto-promotion: 8 timesteps
+   - Scenarios tested:
+     * ALL POSSIBLE SCENARIOS
+     * Maximum complexity
+     * All event types (R, X, P, E)
+     * All order types (N, V, G, E)
+     * All chief types
+     * Heavy load + complex timing
+     * Auto-promotion scenarios
+     * Cancellation scenarios
+     * Promotion scenarios
+     * Express order scenarios
+     * Break management
+     * Health emergency scenarios
+   - Best for: COMPREHENSIVE TESTING - MOST COMPLETE SCENARIO
+
+2. SPECIALIZED TEST FILES
+--------------------------
+
+A) input_cancellation_scenario.txt (25 events)
+   - Purpose: CLEAR ILLUSTRATION OF CANCELLATION FUNCTIONALITY
+   - Chiefs: 2 Normal, 1 Vegan, 1 VIP, 1 Express
+   - Break threshold: 3
+   - Auto-promotion: 10 timesteps
+   - Scenarios tested:
+     * Multiple orders arriving simultaneously (timesteps 1-3)
+     * Strategic cancellations at timesteps 4-9
+     * Cancellation of specific order IDs (101, 103, 105, 109, 111, 115, 117)
+     * Queue management during cancellations
+     * Order removal from waiting queues
+   - Expected results:
+     * Orders 101, 103, 105, 109, 111, 115, 117 should be cancelled
+     * Remaining orders should continue processing
+     * Queue sizes should decrease after cancellations
+   - Best for: Testing cancellation logic, queue management
+
+B) input_auto_promotion_scenario.txt (30 events)
+   - Purpose: CLEAR ILLUSTRATION OF AUTO-PROMOTION FUNCTIONALITY
+   - Chiefs: 1 Normal, 1 Vegan, 1 VIP, 1 Express (limited chiefs)
+   - Break threshold: 2 (very low - frequent breaks)
+   - Auto-promotion: 5 timesteps (low threshold)
+   - Scenarios tested:
+     * Normal orders waiting longer than 5 timesteps
+     * Auto-promotion from Normal to VIP
+     * Limited chief availability (creates waiting scenarios)
+     * Frequent breaks (creates more waiting time)
+     * Order type transitions
+   - Expected results:
+     * Normal orders waiting >5 timesteps should become VIP
+     * Auto-promoted orders should get higher priority
+     * Should see orders moving from Normal to VIP queues
+   - Best for: Testing auto-promotion logic, priority changes
+
+C) input_heavy_load.txt (100 events)
+   - Purpose: STRESS TESTING AND WAITING ORDER GENERATION
+   - Chiefs: 1 Normal, 1 Vegan, 1 VIP, 1 Express (very limited)
+   - Break threshold: 1 (extremely low - constant breaks)
+   - Auto-promotion: 30 timesteps (very high - unlikely to trigger)
+   - Scenarios tested:
+     * Extreme load conditions
+     * Constant chief unavailability (frequent breaks)
+     * Heavy waiting order generation
+     * System stress testing
+     * Queue overflow scenarios
+   - Expected results:
+     * Many waiting orders
+     * Long waiting times
+     * System under stress
+   - Best for: Stress testing, waiting order generation
+
+3. MOST COMPREHENSIVE TEST FILE
+===============================
+
+RECOMMENDATION: input_file6_150_events.txt
+
+This file is the MOST COMPREHENSIVE test file because it includes:
+
+✓ ALL EVENT TYPES:
+   - Arrival events (R) - All order types (N, V, G, E)
+   - Cancellation events (X) - Order removal
+   - Promotion events (P) - Manual promotions
+   - Express events (E) - Express order creation
+
+✓ ALL ORDER TYPES:
+   - Normal orders (N)
+   - Vegan orders (G)
+   - VIP orders (V)
+   - Express orders (E)
+
+✓ ALL CHIEF TYPES:
+   - Normal chiefs (8)
+   - Vegan chiefs (5)
+   - VIP chiefs (5)
+   - Express chiefs (4)
+
+✓ ALL SCENARIOS:
+   - Basic order processing
+   - Complex scheduling
+   - Break management
+   - Auto-promotion (8 timestep threshold)
+   - Manual promotions
+   - Cancellations
+   - Express orders
+   - Health emergencies
+   - Heavy load conditions
+   - Queue management
+   - Priority handling
+   - Timing scenarios
+
+✓ COMPLEXITY FACTORS:
+   - 150 events (highest count)
+   - 22 total chiefs (largest staff)
+   - Multiple simultaneous operations
+   - Complex timing interactions
+   - Stress conditions
+
+4. TESTING RECOMMENDATIONS
+==========================
+
+FOR BASIC TESTING:
+   - Start with: input_file1_25_events.txt
+   - Then try: input_file2_50_events.txt
+
+FOR FUNCTIONALITY TESTING:
+   - Cancellation testing: input_cancellation_scenario.txt
+   - Auto-promotion testing: input_auto_promotion_scenario.txt
+   - Load testing: input_heavy_load.txt
+
+FOR COMPREHENSIVE TESTING:
+   - Use: input_file6_150_events.txt (MOST COMPREHENSIVE)
+
+FOR DEBUGGING:
+   - Use: input_file1_25_events.txt (simplest)
+   - Then: input_cancellation_scenario.txt (focused)
+
+FOR PERFORMANCE TESTING:
+   - Use: input_file6_150_events.txt (most complex)
+   - Then: input_heavy_load.txt (stress test)
+
+
+5. FILE SIZE AND COMPLEXITY COMPARISON
+======================================
+
+File Name                    | Events | Chiefs | Complexity | Primary Purpose
+----------------------------|--------|--------|------------|------------------
+input_file1_25_events.txt   |   25   |   5    |   SIMPLE   | Basic testing
+input_file2_50_events.txt   |   50   |   8    |  MODERATE  | Event type testing
+input_file3_75_events.txt   |   75   |   12   | MODERATE-HIGH | Load testing
+input_file4_100_events.txt  |  100   |   16   |    HIGH    | Performance testing
+input_file5_125_events.txt  |  125   |   20   |  VERY HIGH | Stress testing
+input_file6_150_events.txt  |  150   |   22   |  EXTREME   | COMPREHENSIVE TESTING
+input_cancellation_scenario.txt | 25 | 5 | MODERATE | Cancellation testing
+input_auto_promotion_scenario.txt | 30 | 4 | MODERATE | Auto-promotion testing
+input_heavy_load.txt        |  100   |   4    |    HIGH    | Stress testing
+
+7. CONCLUSION
+=============
+
+For the most comprehensive testing of all scenarios, use:
+    input_file6_150_events.txt
+
+This file provides the best coverage of all possible scenarios and is recommended
+for final testing, validation, and demonstration of the complete system functionality. 
