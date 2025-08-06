@@ -291,11 +291,7 @@ public:
             }
             
             if (isBusy) {
-                if (chief->getType() == 'V') AddReadyVIP(chief);
-                else if (chief->getType() == 'G') AddReadyVegan(chief);
-                else if (chief->getType() == 'N') AddReadyNormal(chief);
-                else if(chief->getType() == 'E')AddReadyExpress(chief);
-                else return false;
+                return false;
             }
 
             order->setAssignedChief(chief);
