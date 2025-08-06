@@ -251,6 +251,40 @@ public:
 		}
 		Head = prev;
 	}
+
+
+
+
+	LinkedList<T>& operator=(const LinkedList<T>& other)
+	{
+		if (this == &other)  // Self-assignment check
+			return *this;
+
+		// Delete existing list
+		DeleteAll();
+
+		if (other.Head == nullptr)
+		{
+			Head = nullptr;
+			return *this;
+		}
+
+		// Copy first node
+		Head = new Node<T>(other.Head->getItem());
+
+		Node<T>* currentNew = Head;
+		Node<T>* currentOther = other.Head->getNext();
+
+		while (currentOther)
+		{
+			Node<T>* newNode = new Node<T>(currentOther->getItem());
+			currentNew->setNext(newNode);
+			currentNew = newNode;
+			currentOther = currentOther->getNext();
+		}
+
+		return *this;
+	}
 };
 
 #endif	
