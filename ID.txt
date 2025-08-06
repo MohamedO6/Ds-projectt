@@ -1,0 +1,8 @@
+Members' Info:
+
+Member Name 	|      ID	 | 	Email
+
+Abdullah Walid	|   202401515    |   s-abdullah.fekry@zewailcity.edu.eg	
+Amr hamed	    |   202400810    |   s-amr.hassan@zewailcity.edu.eg
+Mohamed Tamer   |   202400792    |   s-mohamed.tamer@zewailcity.edu.eg
+Mazen Adel      |   202400692    |   s-mazen.adel@zewailcity.edu.eg
