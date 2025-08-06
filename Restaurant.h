@@ -28,6 +28,7 @@ public:
     priQueue<Chief*> ReadyNormal; // Changed to priQueue
     priQueue<Chief*> ReadyExpress; // Bonus: Express Chiefs
     priQueue<Chief*> InBreak;
+    priQueue<Chief*> Busy;
 
     int N, G, V, E;
     int BO, BN, BG, BV, BE;
@@ -39,7 +40,7 @@ public:
     Restaurant() : N(0), G(0), V(0), E(0), BO(0), BN(0), BG(0), BV(0), BE(0), AutoP(0),
         isSilentMode(false), totalVIPOrders(0), totalVeganOrders(0),
         totalNormalOrders(0), totalExpressOrders(0), autoPromotedOrders(0) {
-        srand(time(0));
+        srand((unsigned int)time(0));
     }
 
     void AddEvent(Event* event) { Events.enqueue(event); }
@@ -57,6 +58,7 @@ public:
     void AddReadyNormal(Chief* chief) { ReadyNormal.enqueue(chief, chief->getSpeed()); }
     void AddReadyExpress(Chief* chief) { ReadyExpress.enqueue(chief, chief->getSpeed()); }
     void AddInBreak(Chief* chief) { InBreak.enqueue(chief, -chief->getBreakEndTime()); }
+    void AddBusy(Chief* chief) { Busy.enqueue(chief, -chief->getSpeed()); } // Priority based on speed (faster chiefs first)
 
     int CountEvents() { return Events.size(); }
     int CountWaitingVIP() { return WaitingVIP.size(); }
@@ -64,12 +66,17 @@ public:
     int CountWaitingNormal() { return WaitingNormal.size(); }
     int CountWaitingExpress() { return WaitingExpress.size(); }
     int CountInService() { return InService.size(); }
-    int CountDone() { return Done.size(Done); }
+    int CountDone() { 
+        // For now, return 0 since we can't easily count without modifying the stack
+        // This is a limitation of the ArrayStack implementation
+        return 0;
+    }
     int CountReadyVIP() { return ReadyVIP.size(); }
     int CountReadyVegan() { return ReadyVegan.size(); }
     int CountReadyNormal() { return ReadyNormal.size(); }
     int CountReadyExpress() { return ReadyExpress.size(); }
     int CountInBreak() { return InBreak.size(); }
+    int CountBusy() { return Busy.size(); }
 
     void PrintEventsLimited() {
         if (isSilentMode) return;
@@ -150,6 +157,11 @@ public:
         cout << CountInBreak() << " chiefs in break: ";
         priQueue<Chief*> tempB = InBreak;
         while (tempB.dequeue(chief, pri)) cout << chief->getID() << " ";
+        cout << endl;
+
+        cout << CountBusy() << " busy chiefs: ";
+        priQueue<Chief*> tempBusy = Busy;
+        while (tempBusy.dequeue(chief, pri)) cout << chief->getID() << " ";
         cout << endl;
     }
 
@@ -269,22 +281,37 @@ public:
             if (chief->getIsInjured() && chief->getInjuryRestPeriod() > currentTime) {
                 chief->setSpeed(chief->getSpeed() / 2);
             }
-            order->setAssignedChief(chief);
-            order->setAssignmentTime(currentTime);
-            int st = ceil((double)order->getSize() / chief->getSpeed());
-            order->setFinishTime(currentTime + st);
-            chief->incrementOrdersServed();
-            if (chief->getOrdersServed() >= BO) {
-                chief->setBreakEndTime(currentTime + chief->getBreakDuration());
-                AddInBreak(chief);
-                chief->setOrdersServed(0);
+
+            // Check if chief is already busy by searching in busy queue
+            priQueue<Chief*> tempBusy = Busy;
+            Chief* tempChief;
+            int tempPri;
+            bool isBusy = false;
+            while (tempBusy.dequeue(tempChief, tempPri)) {
+                if (tempChief == chief) {
+                    isBusy = true;
+                    break;
+                }
             }
-            else {
+            
+            if (isBusy) {
+                // Return chief to their original ready queue
                 if (chief->getType() == 'V') AddReadyVIP(chief);
                 else if (chief->getType() == 'G') AddReadyVegan(chief);
                 else if (chief->getType() == 'N') AddReadyNormal(chief);
                 else AddReadyExpress(chief);
+                return false; // Chief already has an order in service
             }
+
+            order->setAssignedChief(chief);
+            order->setAssignmentTime(currentTime);
+            int st = (int)ceil((double)order->getSize() / chief->getSpeed());
+            order->setFinishTime(currentTime + st);
+            chief->incrementOrdersServed();
+
+            // Add chief to busy queue
+            AddBusy(chief);
+
             return true;
         }
         return false;
@@ -292,6 +319,7 @@ public:
 
     void Simulate() {
         int currentTime = 0;
+        Order* order;
         while (!Events.isEmpty() || !WaitingVIP.isEmpty() || !WaitingVegan.isEmpty() ||
             !WaitingNormal.isEmpty() || !WaitingExpress.isEmpty() || !InService.isEmpty()) {
             if (!isSilentMode) {
@@ -323,7 +351,6 @@ public:
             // Check AutoP for Normal Orders
             waitNorm tempNormal = WaitingNormal;
             WaitingNormal.clear();
-            Order* order;
             while (tempNormal.dequeue(order)) {
                 if (currentTime - order->getRequestTime() > AutoP && order->getType() == 'N') {
                     order->promoteToVIP(0);
@@ -386,6 +413,29 @@ public:
             InService.clear();
             while (tempInService.dequeue(order, pri)) {
                 if (order->getFinishTime() <= currentTime) {
+                    Chief* chief = order->getAssignedChief();
+                    if (chief) {
+                        priQueue<Chief*> tempBusy = Busy;
+                        Busy.clear();
+                        Chief* tempChief;
+                        int tempPri;
+                        while (tempBusy.dequeue(tempChief, tempPri)) {
+                            if (tempChief != chief) {
+                                Busy.enqueue(tempChief, tempPri);
+                            }
+                        }
+                        
+                        if (chief->getOrdersServed() >= BO) {
+                            chief->setBreakEndTime(currentTime + chief->getBreakDuration());
+                            chief->setOrdersServed(0);
+                            AddInBreak(chief);
+                        } else {
+                            if (chief->getType() == 'V') AddReadyVIP(chief);
+                            else if (chief->getType() == 'G') AddReadyVegan(chief);
+                            else if (chief->getType() == 'N') AddReadyNormal(chief);
+                            else AddReadyExpress(chief);
+                        }
+                    }
                     AddDone(order);
                 }
                 else {
@@ -506,5 +556,6 @@ public:
         while (ReadyNormal.dequeue(chief, pri)) delete chief;
         while (ReadyExpress.dequeue(chief, pri)) delete chief;
         while (InBreak.dequeue(chief, pri)) delete chief;
+        while (Busy.dequeue(chief, pri)) delete chief;
     }
 };

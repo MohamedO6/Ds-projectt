@@ -13,7 +13,7 @@ int main() {
         cout << "Simulation Starts in Silent mode ...\n";
     }
 
-    if (restaurant.LoadFile("input.txt")) {
+    if (restaurant.LoadFile("input_heavy_load.txt")) {
         restaurant.Simulate();
         restaurant.GenerateOutputFile("output.txt");
         if (restaurant.isSilentMode) {
